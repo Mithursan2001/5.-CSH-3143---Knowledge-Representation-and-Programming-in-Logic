@@ -1,0 +1,36 @@
+conc([ ],L1,L1).
+conc([X|L1],L2,[X|L3]):-conc(L1,L2,L3).
+
+
+/*output
+?- conc([m,i,t,h,u],[r,s,a,n],L).
+L = [m, i, t, h, u, r, s, a, n].
+*/
+
+/*
+?- conc(L1,L2,[a,b,c]).
+L1 = [],
+L2 = [a, b, c] ;
+L1 = [a],
+L2 = [b, c] ;
+L1 = [a, b],
+L2 = [c] ;
+L1 = [a, b, c],
+L2 = [] ;
+false.
+
+*/
+
+
+member1(X,L):-conc(_,[X|_],L).
+
+add(X,L,[X|L]).
+
+
+del(X,[X|Tail],Tail).
+del(X,[Y|Tail],[Y|Tail1]):-del(X,Tail,Tail1).
+
+
+insert(X,List,BiggerList):-del(X,BiggerList,List).
+
+member2(X,List):-del(X,List,_).

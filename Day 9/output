@@ -1,0 +1,144 @@
+% Exercise 3.1 – Distance
+distance((X1,Y1), (X2,Y2), D) :-
+    DX is X2 - X1,
+    DY is Y2 - Y1,
+    D is sqrt(DX*DX + DY*DY).
+
+% Exercise 3.2 – Square
+square(N, Char) :-
+    square_line(N, Char, N).
+
+square_line(0, _, _) :- nl.
+square_line(Rows, Char, N) :-
+    Rows > 0,
+    print_chars(N, Char), nl,
+    R1 is Rows - 1,
+    square_line(R1, Char, N).
+
+print_chars(0, _) :- !.
+print_chars(N, Char) :-
+    N > 0,
+    write(Char), write(' '),
+    N1 is N - 1,
+    print_chars(N1, Char).
+
+% Exercise 3.3 – Fibonacci
+fibonacci(0, 0).
+fibonacci(1, 1).
+fibonacci(N, F) :-
+    N > 1,
+    N1 is N - 1, fibonacci(N1, F1),
+    N2 is N - 2, fibonacci(N2, F2),
+    F is F1 + F2.
+
+% Exercise 3.4 – Fast Fibonacci
+fastfibo(N, F) :- fastfibo(N, 0, 1, F).
+
+fastfibo(0, A, _, A).
+fastfibo(N, A, B, F) :-
+    N > 0,
+    N1 is N - 1,
+    Sum is A + B,
+    fastfibo(N1, B, Sum, F).
+
+% Exercise 3.5 – Element at
+element_at([H|_], 1, H).
+element_at([_|T], N, X) :-
+    N > 1,
+    N1 is N - 1,
+    element_at(T, N1, X).
+
+% Exercise 3.6 – Mean
+mean(List, Mean) :-
+    sum_list(List, Sum),
+    length(List, Len),
+    Len > 0,
+    Mean is Sum / Len.
+
+% Exercise 3.7 – Minimum
+minimum([H|T], Min) :- minimum(T, H, Min).
+minimum([], Min, Min).
+minimum([H|T], MinSoFar, Min) :-
+    H < MinSoFar, !,
+    minimum(T, H, Min).
+minimum([_|T], MinSoFar, Min) :-
+    minimum(T, MinSoFar, Min).
+
+% Exercise 3.8 – Range
+range(Low, High, []) :- Low > High.
+range(Low, High, [Low|Rest]) :-
+    Low =< High,
+    Next is Low + 1,
+    range(Next, High, Rest).
+
+% Exercise 3.9 – Year, Before, Older
+year(Y, Person) :- born(Person, date(_,_,Y)).
+
+before(date(D1,M1,Y1), date(D2,M2,Y2)) :-
+    Y1 < Y2;
+    Y1 =:= Y2, M1 < M2;
+    Y1 =:= Y2, M1 =:= M2, D1 < D2.
+
+older(P1, P2) :-
+    born(P1, D1),
+    born(P2, D2),
+    before(D1, D2).
+
+% Exercise 3.10 – Robot Status
+status(Cmds, Pos, Ori) :- status(Cmds, (0,0), north, Pos, Ori).
+
+status([], Pos, Ori, Pos, Ori).
+status([move|T], (X,Y), Ori, Pos, OriOut) :-
+    move_forward((X,Y), Ori, NewPos),
+    status(T, NewPos, Ori, Pos, OriOut).
+status([right|T], Pos, Ori, PosOut, OriOut) :-
+    turn_right(Ori, NewOri),
+    status(T, Pos, NewOri, PosOut, OriOut).
+status([left|T], Pos, Ori, PosOut, OriOut) :-
+    turn_left(Ori, NewOri),
+    status(T, Pos, NewOri, PosOut, OriOut).
+
+move_forward((X,Y), north, (X,Y1)) :- Y1 is Y+1.
+move_forward((X,Y), south, (X,Y1)) :- Y1 is Y-1.
+move_forward((X,Y), east, (X1,Y)) :- X1 is X+1.
+move_forward((X,Y), west, (X1,Y)) :- X1 is X-1.
+
+turn_right(north, east).
+turn_right(east, south).
+turn_right(south, west).
+turn_right(west, north).
+
+turn_left(north, west).
+turn_left(west, south).
+turn_left(south, east).
+turn_left(east, north).
+
+% Exercise 3.11 – Polynomial Sum
+poly_sum(P1, P2, Sum) :- append(P1, P2, Temp), combine_like_terms(Temp, Sum).
+
+combine_like_terms([], []).
+combine_like_terms([(C,E)|T], [(C2,E)|Rest]) :-
+    gather_same_exp(E, T, C, T2, C2),
+    combine_like_terms(T2, Rest).
+
+gather_same_exp(_, [], Acc, [], Acc).
+gather_same_exp(E, [(C,E1)|T], Acc, Rest, Sum) :-
+    (E =:= E1 -> Acc1 is Acc + C, gather_same_exp(E, T, Acc1, Rest, Sum)
+    ; Rest = [(C,E1)|T1], gather_same_exp(E, T, Acc, T1, Sum)).
+
+% Exercise 3.12 – Prime
+prime(2).
+prime(N) :- N > 2, N1 is N-1, \+ has_factor(N,2,N1).
+
+has_factor(_, F, N) :- F > N, !, fail.
+has_factor(N, F, _) :- 0 is N mod F.
+has_factor(N, F, Max) :- F*F =< N, F2 is F+1, has_factor(N, F2, Max).
+
+% Exercise 3.13 – Goldbach
+goldbach(N, A+B) :-
+    N > 2,
+    0 is N mod 2,
+    between(2, N, A),
+    prime(A),
+    B is N - A,
+    prime(B).

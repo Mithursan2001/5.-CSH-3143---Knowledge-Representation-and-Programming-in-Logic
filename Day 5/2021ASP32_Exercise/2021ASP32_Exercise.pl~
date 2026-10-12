@@ -1,0 +1,78 @@
+fruit(apple).
+fruit(banana).
+fruit(orange).
+
+animal(dog).
+animal(cat).
+animal(cow).
+
+color(blue).
+color(green).
+color(red).
+
+/* output
+?- fruit(X).
+X = apple ;
+X = banana ;
+X = orange.
+
+?- animal(dog).
+true.
+
+?- fruit(blue).
+false.
+*/
+
+father(john,mary).
+mother(mary,susan).
+brother(peter,mary).
+sister(susan,tom).
+
+parent(X,Y):-father(X,Y);mother(X,Y).
+grandparent(X,Y):-parent(X,Z),parent(Z,Y).
+sibling(X, Y):-brother(X, Y);sister(X,Y);brother(Y,X);sister(Y,X).
+
+/*output
+
+?- grandparent(X, susan).
+X = john ;
+false.
+
+
+?- sibling(peter, X).
+X = mary ;
+false.
+*/
+
+
+likes(john,pizza).
+likes(mary,pasta).
+likes(tom,pizza).
+likes(anna,pasta).
+likes(anna,salad).
+
+likes_pizza(X):-likes(X,pizza).
+
+/* output
+?- likes(X, pasta).
+X = mary ;
+X = anna.
+
+?- likes(tom, salad).
+false.
+
+*/
+
+
+age(alice,20).
+age(bob,17).
+age(carol,22).
+
+adult(X):-age(X,Age),Age>18.
+
+/*
+
+?- age(X, Age), Age < 21.
+
+
+*/

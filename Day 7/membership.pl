@@ -1,0 +1,57 @@
+/*
+  output
+?- member(b,[a,b,c]).
+true .
+
+?- member(b,[a,[b,c]]).
+false.
+
+?- member([b,c],[a,[b,c]]).
+true.
+
+?- member(X,[23,45,67,12,222,19,9,6]), Y is X*X, Y < 100.
+X = 9,
+Y = 81 ;
+X = 6,
+Y = 36.
+
+X=12   false
+X=9    true
+X=10   false
+
+?- member(12,[23,45,67,12,222,19,9,6]), Y is 12*112, Y < 100.
+false.
+
+?- member(9,[23,45,67,12,222,19,9,6]), Y is 9*9, Y < 100.
+Y = 81 .
+
+?- member(10,[23,45,67,12,222,19,9,6]), Y is 10*10, Y < 100.
+false.
+
+
+
+*/
+
+add(X,[],[X]).
+add(X,[Y|Tail],[Y|Tail1]):- add(X,Tail,Tail1).
+
+/*
+  output
+
+?- add(e,[a,b,c,d],NewList).
+NewList = [a, b, c, d, e] ;
+false.
+*/
+
+
+add(X,L2,[X|L2]).
+/*
+  output
+?- add(a,[b,c,d,e],NewList) .
+NewList = [b, c, d, e, a] ;
+NewList = [b, c, d, e, a] ;
+NewList = [b, c, d, a, e] ;
+NewList = [b, c, a, d, e] ;
+NewList = [b, a, c, d, e] ;
+NewList = [a, b, c, d, e].
+*/
